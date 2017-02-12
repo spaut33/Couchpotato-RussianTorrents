@@ -60,7 +60,7 @@ class nnm_club(TorrentProvider, MovieProvider):
                 for result in torrents:
                     all_cells = result.find_all('td')
 					
-                    copyright_cell = all_cells[title_cell_idx].find('img', title=u'Копирайт')
+                    copyright_cell = all_cells[title_cell_idx].find('span', re.compile("[ © ]"))
 
                     title_cell = all_cells[title_cell_idx].find('a')
                     if not copyright_cell:
@@ -71,7 +71,8 @@ class nnm_club(TorrentProvider, MovieProvider):
                     
                     topic_id = title_cell['href']
                     topic_id = topic_id.replace('viewtopic.php?t=', '')
-                    if not copyright_cell:
+		    # log.debug('Download link:' + str(dl_cell))
+                    if (not copyright_cell) and dl_cell:
                         torrent_id = dl_cell['href']
                         torrent_id = torrent_id.replace('download.php?id=', '')
                     

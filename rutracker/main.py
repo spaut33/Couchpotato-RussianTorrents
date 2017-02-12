@@ -53,7 +53,7 @@ class rutracker(TorrentProvider, MovieProvider):
 
                     title_cell = all_cells.find('a', attrs = {'class' : 'tLink'})
                     size_cell = all_cells.find('td', attrs = {'class' : 'tor-size'})
-                    seed_cell = all_cells.find('b', attrs = {'class' : 'seedmed'})
+                    seed_cell = all_cells.find_all('b', attrs = {'class' : 'seedmed'})
                     leech_cell = all_cells.find('td', attrs = {'class' : 'leechmed'})
 		    leech_cell = leech_cell.find('b')
 
@@ -63,8 +63,12 @@ class rutracker(TorrentProvider, MovieProvider):
                     topic_id = topic_id.replace('viewtopic.php?t=', '')
                     
                     size = size_cell.replace(u' GB ↓','')
-		
 
+		    #log.debug('Rutracker seeds BEFORE: ' + str(seed_cell))
+		    seed_cell = filter(str.isdigit, str(seed_cell))
+		    leech_cell = filter(str.isdigit, str(leech_cell))
+		    #log.debug('Rutracker seeds AFTER: ' + str(seed_cell)) 
+		
                     # Workaround for filtering 1080p and 720p by CouchPotato: BDRip is a source not a video quality!
                     title = title_cell.getText().replace('BDRip', '')
                     title = re.sub('^.*? / ', '', title)
@@ -74,8 +78,8 @@ class rutracker(TorrentProvider, MovieProvider):
 
                     torrent_name = title
                     torrent_size = self.parseSize( size )
-                    torrent_seeders = tryInt(seed_cell.getText())
-                    torrent_leechers = tryInt(leech_cell.getText())
+                    torrent_seeders = int(seed_cell)
+                    torrent_leechers = int(leech_cell)
                     torrent_detail_url = self.urls['detail'] % topic_id
                     torrent_url = self.urls['download'] % topic_id
 

@@ -52,10 +52,19 @@ class rutor(TorrentProvider, MovieProvider):
                     all_cells = result.find_all('td')
 		    dl_cell = all_cells[1].find_all('a')[0]
 		    title_cell = all_cells[1].find_all('a')[2]
-                    size_cell = all_cells[3]
-                    seed_cell = all_cells[4].find('span', attrs = {'class' : 'green'}).getText()
-                    leech_cell = all_cells[4].find('span', attrs = {'class' : 'red'}).getText()
-		    
+                    # log.debug('Total rows in a line of result table:' + str(len(all_cells)))
+		    if (len(all_cells) == 5):
+		    	cell_num = 3
+		    else:
+			cell_num = 2
+		    size_cell = all_cells[cell_num]
+                    seed_cell = all_cells[cell_num+1].find('span', attrs = {'class' : 'green'})
+		    if seed_cell:
+			seed_cell = seed_cell.getText()
+                    leech_cell = all_cells[cell_num+1].find('span', attrs = {'class' : 'red'})
+		    if leech_cell:
+			leech_cell = leech_cell.getText()		    
+
 		    seed_cell = seed_cell.replace(u'&nbsp;', '')
 		    leech_cell = leech_cell.replace(u'&nbsp;','')
 
